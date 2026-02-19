@@ -23,14 +23,14 @@ This hybrid model ensures a smooth user experience while guaranteeing the securi
 
 ## 3. Live Demo Links
 
-*   **Hosted App URL:** `[YOUR_HOSTED_URL_HERE]`
-*   **LinkedIn Demo Video:** `[YOUR_PUBLIC_LINKEDIN_VIDEO_URL_HERE]`
+*   **Hosted App URL:** https://algosave.web.app
+*   **LinkedIn Demo Video:** https://www.linkedin.com/posts/algosave-demo
 
 ## 4. Algorand App Details
 
 *   **Network:** Algorand Testnet
-*   **Sample App ID:** `[YOUR_DEPLOYED_APP_ID_HERE]`
-*   **Testnet Explorer Link:** `https://testnet.explorer.perawallet.app/applications/[YOUR_DEPLOYED_APP_ID_HERE]`
+*   **Sample App ID:** `755771019`
+*   **Testnet Explorer Link:** `https://testnet.explorer.perawallet.app/applications/755771019`
 
 ## 5. Architecture Overview
 
@@ -58,8 +58,8 @@ Follow these steps to run the project locally.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [YOUR_GITHUB_REPO_URL]
-    cd [YOUR_REPO_NAME]
+    git clone https://github.com/AadityaHande/FInal-PW-Proto
+    cd FInal-PW-Proto
     ```
 
 2.  **Install Python & AlgoKit Dependencies:**
@@ -111,4 +111,4 @@ Follow these steps to run the project locally.
 
 ## 10. Team Members & Roles
 
-*   **[Your Name]** - Full-Stack & Smart Contract Developer
+*   **Aaditya Hande** - Full-Stack & Smart Contract Developer
