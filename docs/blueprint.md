@@ -7,7 +7,6 @@
 - Goal Detail Page: Detailed view showing goal metadata, total saved amount, deposit list (chronological), deposit button (mock), horizontal progress bar, and line chart visualizing savings over time.
 - Deposit Simulation: Simulates a deposit; user enters amount, increases currentSaved, appends a deposit object with amount, timestamp, and mockTxId, and updates Firestore. Contains clearly structured tool to later incorporate Algorand transactions.
 - Achievement Logic: Automatically assigns achievements ('First Deposit', '50% Saver', 'Goal Completed') based on savings progress and stores achievements per goal in Firestore.
-- Placeholder functions: Functions such as connectWallet(), sendAlgoTransaction(amount), fetchOnChainBalance() that return mock values.
 
 ## Style Guidelines:
 
