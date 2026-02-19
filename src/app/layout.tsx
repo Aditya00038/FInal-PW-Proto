@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { WalletProvider } from "@/contexts/WalletContext";
@@ -7,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import ChatBot from "@/components/chat/ChatBot";
 import Script from "next/script";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = { className: "font-sans" };
 
 export const metadata: Metadata = {
   title: "DhanSathi - AI-Powered Financial Management",
