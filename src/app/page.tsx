@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@/contexts/WalletContext";
 import { Loader2 } from "lucide-react";
-import LandingContent from "./(landing)/page";
+import LandingContent from "@/components/LandingPage";
 
 // Root page - shows landing if not connected, redirects to dashboard if connected
 export default function Home() {
