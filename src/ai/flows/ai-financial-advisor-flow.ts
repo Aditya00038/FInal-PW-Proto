@@ -236,20 +236,21 @@ User's Financial Data:
 ${input.context.recentDeposits?.length ? `- Recent Deposits: ${input.context.recentDeposits.map(d => `${d.amount} ALGO on ${d.date}`).join(', ')}` : '- No recent deposits'}
 Use this data to personalize your response.` : ''}`;
 
-  const conversationContext = input.conversationHistory?.map(msg =>
-    `${msg.role === 'user' ? 'User' : 'DhanSathi AI'}: ${msg.content}`
-  ).join('\n\n') || '';
-
-  const prompt = `${systemPrompt}
-
-${conversationContext ? `Conversation so far:\n${conversationContext}\n\n` : ''}User: ${input.userMessage}
-
-Give a detailed, helpful, and actionable response:`;
+  const conversationHistory = input.conversationHistory?.map(msg => ({
+    role: (msg.role === 'assistant' ? 'model' : 'user') as 'user' | 'model',
+    content: [{ text: msg.content }],
+  })) || [];
 
   // Try AI first
   if (isAIConfigured) {
     try {
-      const { text } = await ai.generate({ prompt });
+      const { text } = await ai.generate({
+        system: systemPrompt,
+        messages: [
+          ...conversationHistory,
+          { role: 'user', content: [{ text: input.userMessage }] },
+        ],
+      });
 
       if (text && text.length > 30) {
         // Generate contextual follow-up suggestions
