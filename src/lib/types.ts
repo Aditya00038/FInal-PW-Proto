@@ -51,3 +51,16 @@ export interface NormalGoal {
   transactions: NormalGoalTransaction[];
   goalCompleted: boolean;
 }
+
+// ── ARC-3 Achievement NFT ────────────────────────────────────────────────────
+
+export interface AchievementNFT {
+  asaId: number; // Algorand Standard Asset ID
+  txId: string; // creation transaction ID
+  goalId: string;
+  goalName: string;
+  targetAmount: number; // microALGOs
+  totalSaved: number; // microALGOs
+  appId: number;
+  mintedAt: string; // ISO string
+}

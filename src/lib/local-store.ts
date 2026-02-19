@@ -1,9 +1,10 @@
 // Local storage-based goal store — replaces Firebase when it is unreachable.
 // Runs entirely in the browser; the data structure mirrors the Firestore schema.
 
-import type { Goal, Deposit } from "./types";
+import type { Goal, Deposit, AchievementNFT } from "./types";
 
 const GOALS_KEY = "algosave_goals";
+const NFTS_KEY  = "algosave_nfts";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -88,4 +89,38 @@ export function getAllDeposits(): (Deposit & { goalId: string; goalName: string 
   return allDeposits.sort((a, b) => 
     new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
+}
+
+// ── NFT record helpers ────────────────────────────────────────────────────────
+
+function readNFTs(): AchievementNFT[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(NFTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeNFTs(nfts: AchievementNFT[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(NFTS_KEY, JSON.stringify(nfts));
+}
+
+export function saveNFT(nft: AchievementNFT): void {
+  const nfts = readNFTs();
+  // Avoid duplicates for the same goal
+  if (!nfts.some((n) => n.goalId === nft.goalId)) {
+    nfts.push(nft);
+    writeNFTs(nfts);
+  }
+}
+
+export function getNFTByGoalId(goalId: string): AchievementNFT | null {
+  return readNFTs().find((n) => n.goalId === goalId) ?? null;
+}
+
+export function getAllNFTs(): AchievementNFT[] {
+  return readNFTs();
 }
