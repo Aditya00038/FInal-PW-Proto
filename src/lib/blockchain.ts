@@ -311,6 +311,12 @@ export async function mintAchievementNFT(
     const assetName = `DSAchv-${namePart}`;
     const unitName = "DSACHV";
 
+    // ARC-3 requires the asset URL to end with "#arc3" to signal that the
+    // asset follows the ARC-3 metadata standard.
+    // We embed the goal's AlgoExplorer link so verifiers can trace it back to
+    // the savings vault contract on Algorand Testnet.
+    const assetUrl = `https://testnet.explorer.perawallet.app/application/${goalInfo.appId}#arc3`;
+
     const createAsaTxn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
         from: senderAddress,
         suggestedParams,
@@ -323,6 +329,7 @@ export async function mintAchievementNFT(
         reserve: senderAddress,
         freeze: senderAddress,
         clawback: senderAddress,
+        assetURL: assetUrl,
         note,
     });
 
