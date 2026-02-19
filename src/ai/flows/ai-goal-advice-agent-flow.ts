@@ -77,20 +77,22 @@ Guidelines:
 - For Indian users, give culturally relevant tips
 - If the goal seems unreachable, gently suggest adjusting the timeline or target`;
 
-  const conversationContext = input.conversationHistory
-    ?.map((msg) => `${msg.role === 'user' ? 'User' : 'Advisor'}: ${msg.content}`)
-    .join('\n\n') || '';
+  const conversationHistory = input.conversationHistory
+    ?.map((msg) => ({
+      role: (msg.role === 'assistant' ? 'model' : 'user') as 'user' | 'model',
+      content: [{ text: msg.content }],
+    })) || [];
 
   const userQ = input.userQuestion || `Create a plan to help me achieve my "${input.goalName}" goal.`;
 
-  const prompt = `${systemPrompt}
-
-${conversationContext ? `Previous conversation:\n${conversationContext}\n\n` : ''}User: ${userQ}
-
-Provide specific, actionable advice:`;
-
   try {
-    const { text } = await ai.generate({ prompt });
+    const { text } = await ai.generate({
+      system: systemPrompt,
+      messages: [
+        ...conversationHistory,
+        { role: 'user', content: [{ text: userQ }] },
+      ],
+    });
     return {
       success: true,
       response: text || "Let me help you plan! Could you tell me more about your situation?",
