@@ -775,6 +775,9 @@ This prevents "funds sent but deposit not recorded" scenarios
 - [x] Deposit Functionality
 - [x] Visual Analytics
 - [x] Achievement Badges
+- [x] ARC-3 NFT minting for goal achievements (docs/arc3-nft-achievement.md)
+- [x] AlgoKit-based deployment evidence (docs/algokit-deployment.md)
+- [x] AlgoExplorer and TestNet documentation (docs/algoexplorer-testnet.md)
 - [x] PWA Support
 - [x] localStorage Persistence
 - [x] Complete Documentation
