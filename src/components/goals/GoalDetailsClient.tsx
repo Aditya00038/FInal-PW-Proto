@@ -27,6 +27,7 @@ import { calculateFinancialHealth } from '@/lib/financial-health';
 import { FinancialHealthIndicator } from './FinancialHealthIndicator';
 import { getGoalById, saveNFT, getNFTByGoalId } from '@/lib/local-store';
 import GoalAdviceAgent from './GoalAdviceAgent';
+import { calculateAchievements, getTierBadgeStyle, type Achievement } from '@/lib/achievements';
 
 type GoalDetailsClientProps = {
   goal: Goal;
@@ -101,16 +102,18 @@ export default function GoalDetailsClient({ goal: initialGoal }: GoalDetailsClie
     setAchievementInfo(null);
 
     const progress = (microAlgosToAlgos(onChainGoal.totalSaved) / microAlgosToAlgos(onChainGoal.targetAmount)) * 100;
-    const achievements = getAchievements(onChainGoal);
-    if (achievements.length === 0) {
+    const achievementData = calculateAchievements(goal.deposits || [], onChainGoal);
+    const unlockedList = achievementData.achievements.filter(a => a.unlocked);
+    
+    if (unlockedList.length === 0) {
       setIsLoadingAdvice(false);
       return;
     }
 
     try {
-      const lastAchievement = achievements[achievements.length - 1];
+      const lastAchievement = unlockedList[unlockedList.length - 1];
       const advice = await getAchievementCoachAdvice({
-        achievementName: lastAchievement,
+        achievementName: lastAchievement.name,
         goalName: goal.name,
         currentSaved: microAlgosToAlgos(onChainGoal.totalSaved),
         targetAmount: microAlgosToAlgos(onChainGoal.targetAmount),
@@ -213,15 +216,10 @@ export default function GoalDetailsClient({ goal: initialGoal }: GoalDetailsClie
       return dateB - dateA;
   }) : [];
   
-
-  const getAchievements = (onchainData: OnChainGoal) => {
-    const ach: string[] = [];
-    if (goal.deposits?.length > 0) ach.push("First Deposit");
-    if (onchainData.totalSaved > 0 && onchainData.totalSaved >= onchainData.targetAmount / 2) ach.push("50% Saver");
-    if (onchainData.goalCompleted) ach.push("Goal Completed");
-    return ach;
-  };
-  const achievements = getAchievements(onChainGoal);
+  // Use new achievements system
+  const achievementProgress = calculateAchievements(goal.deposits || [], onChainGoal);
+  const unlockedAchievements = achievementProgress.achievements.filter(a => a.unlocked);
+  const lockedAchievements = achievementProgress.achievements.filter(a => !a.unlocked);
 
   const canWithdraw = onChainGoal.goalCompleted || (onChainGoal.deadline > 0 && Date.now() / 1000 > onChainGoal.deadline);
 
@@ -232,7 +230,12 @@ export default function GoalDetailsClient({ goal: initialGoal }: GoalDetailsClie
         <CardHeader>
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle className="font-headline text-3xl">{goal.name}</CardTitle>
+              <div className="flex items-center gap-2 flex-wrap">
+                <CardTitle className="font-headline text-3xl">{goal.name}</CardTitle>
+                <Badge variant="outline" className="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
+                  🔒 On-Chain (Locked)
+                </Badge>
+              </div>
               <CardDescription className="mt-2 flex items-center text-base">
                 <Calendar className="mr-2 h-4 w-4" />
                 Deadline: {formatDateFromTimestamp(onChainGoal.deadline)}
@@ -456,17 +459,66 @@ export default function GoalDetailsClient({ goal: initialGoal }: GoalDetailsClie
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center"><Award className="mr-2" /> Achievements</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center"><Award className="mr-2" /> Achievements</span>
+                <span className="text-sm font-normal text-muted-foreground">
+                  {achievementProgress.totalUnlocked}/{achievementProgress.totalPossible}
+                </span>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              {achievements.length > 0 ? (
-                achievements.map((ach, index) => (
-                  <Badge key={index} variant="secondary" className="mr-2 mb-2 p-2 text-sm bg-yellow-100 text-yellow-800 border-yellow-300">
-                    <Award className="mr-2 h-4 w-4" /> {ach}
-                  </Badge>
-                ))
+            <CardContent className="space-y-4">
+              {/* Unlocked achievements */}
+              {unlockedAchievements.length > 0 ? (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Unlocked</p>
+                  <div className="flex flex-wrap gap-2">
+                    {unlockedAchievements.map((ach) => (
+                      <div
+                        key={ach.id}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 ${ach.bgColor} ${getTierBadgeStyle(ach.tier)}`}
+                        title={ach.description}
+                      >
+                        <span className="text-lg">{ach.icon}</span>
+                        <span className={`text-sm font-medium ${ach.color}`}>{ach.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ) : (
-                <p className="text-center text-sm text-muted-foreground">No achievements unlocked yet. Keep saving!</p>
+                <p className="text-center text-sm text-muted-foreground py-2">No achievements unlocked yet. Start saving!</p>
+              )}
+              
+              {/* Next milestone */}
+              {achievementProgress.nextMilestone && (
+                <div className="mt-3 p-3 rounded-lg bg-secondary/50 border border-dashed border-border">
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-medium">Next:</span> {achievementProgress.nextMilestone}
+                  </p>
+                </div>
+              )}
+              
+              {/* Locked achievements preview */}
+              {lockedAchievements.length > 0 && (
+                <div className="space-y-2 mt-4">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Locked ({lockedAchievements.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {lockedAchievements.slice(0, 6).map((ach) => (
+                      <div
+                        key={ach.id}
+                        className="flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-muted/50 border border-border opacity-50"
+                        title={`${ach.name}: ${ach.description}`}
+                      >
+                        <span className="text-sm grayscale">{ach.icon}</span>
+                        <span className="text-xs text-muted-foreground">{ach.name}</span>
+                      </div>
+                    ))}
+                    {lockedAchievements.length > 6 && (
+                      <div className="flex items-center px-2 py-1.5 rounded-md bg-muted/30 text-xs text-muted-foreground">
+                        +{lockedAchievements.length - 6} more
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -536,7 +588,7 @@ export default function GoalDetailsClient({ goal: initialGoal }: GoalDetailsClie
             </Card>
           )}
 
-           {achievements.length > 0 && (
+           {unlockedAchievements.length > 0 && (
              <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center"><Bot className="mr-2" /> AI Coach</CardTitle>

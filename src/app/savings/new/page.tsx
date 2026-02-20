@@ -43,9 +43,9 @@ export default function NewSavingsGoalPage() {
                 <PiggyBank className="h-6 w-6" />
               </div>
               <div>
-                <CardTitle className="font-headline text-2xl">Create Savings Goal</CardTitle>
+                <CardTitle className="font-headline text-2xl">💰 Off-Chain Savings Goal</CardTitle>
                 <CardDescription>
-                  Set a goal, track your savings, withdraw anytime. Get AI-powered advice to stay on track.
+                  Flexible savings in INR. Deposit & withdraw anytime. Perfect for everyday goals with AI-powered tracking.
                 </CardDescription>
               </div>
             </div>
@@ -64,15 +64,15 @@ export default function NewSavingsGoalPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-sm flex items-center gap-1.5">
-                  Want guaranteed discipline?
+                  Need maximum discipline? 🔒
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Try our <strong>Smart Contract Goal</strong> — your funds are locked on the Algorand blockchain and
+                  Try our <strong>On-Chain Goal</strong> — your funds are locked on the Algorand blockchain and
                   cannot be withdrawn until your goal is complete. No temptation, no excuses!
                 </p>
                 <Button variant="link" size="sm" className="px-0 mt-1 h-auto text-xs" asChild>
-                  <Link href="/goals/new">Create Smart Contract Goal →</Link>
+                  <Link href="/goals/new">Create On-Chain Goal →</Link>
                 </Button>
               </div>
             </div>

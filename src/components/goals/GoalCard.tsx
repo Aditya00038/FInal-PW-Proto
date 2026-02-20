@@ -35,10 +35,15 @@ export default function GoalCard({ goal }: GoalCardProps) {
   const { score } = calculateFinancialHealth(goal);
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-lg">
+    <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-lg border-l-4 border-l-emerald-500">
       <CardHeader>
         <div className="flex items-start justify-between">
-          <CardTitle className="font-headline text-xl">{goal.name}</CardTitle>
+          <div>
+            <CardTitle className="font-headline text-xl">{goal.name}</CardTitle>
+            <Badge variant="outline" className="mt-1 text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
+              🔒 On-Chain (Locked)
+            </Badge>
+          </div>
           <Badge
             variant={status === 'completed' ? 'default' : 'secondary'}
             className={cn(

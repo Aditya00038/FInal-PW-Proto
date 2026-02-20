@@ -18,20 +18,20 @@ export default function FinancialOverview({
 }: FinancialOverviewProps) {
   const stats = [
     {
-      title: "Smart Contract Saved",
+      title: "🔒 On-Chain (ALGO)",
       value: formatINR(algoToInr(totalSaved)),
-      subtitle: `${totalSaved.toFixed(2)} ALGO`,
+      subtitle: `${totalSaved.toFixed(2)} ALGO locked`,
       icon: TrendingUp,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/20",
+      color: "text-emerald-400",
+      bgColor: "bg-emerald-500/20",
     },
     {
-      title: "Savings Balance",
+      title: "💰 Off-Chain (INR)",
       value: `₹${normalTotalSaved.toLocaleString("en-IN")}`,
-      subtitle: normalTotalTarget > 0 ? `of ₹${normalTotalTarget.toLocaleString("en-IN")} target` : "No savings goals yet",
+      subtitle: normalTotalTarget > 0 ? `of ₹${normalTotalTarget.toLocaleString("en-IN")} target` : "Flexible savings",
       icon: Banknote,
-      color: "text-green-400",
-      bgColor: "bg-green-500/20",
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/20",
     },
     {
       title: "Progress",

@@ -207,13 +207,13 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Terms of Service</a></li>
+                <li><a href="/privacy" className="text-muted-foreground hover:text-foreground">Privacy Policy</a></li>
+                <li><a href="/terms" className="text-muted-foreground hover:text-foreground">Terms of Service</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">&copy; 2024 DhanSathi. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">&copy; 2025 DhanSathi. All rights reserved.</p>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Powered by</span>
               <span className="text-sm font-semibold text-primary">Algorand</span>

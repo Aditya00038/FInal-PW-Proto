@@ -52,12 +52,12 @@ export default function NewGoalPage() {
         <Card className="shadow-lg bg-card border-border">
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
                 <Target className="h-6 w-6" />
               </div>
               <div>
-                <CardTitle className="font-headline text-2xl">Create Smart Contract Goal</CardTitle>
-                <CardDescription>Deploy a blockchain smart contract to enforce your savings discipline.</CardDescription>
+                <CardTitle className="font-headline text-2xl">🔒 On-Chain Smart Contract Goal</CardTitle>
+                <CardDescription>Funds locked on Algorand blockchain. Cannot withdraw until goal is complete. Maximum discipline!</CardDescription>
               </div>
             </div>
           </CardHeader>
