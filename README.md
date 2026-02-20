@@ -1,114 +1,234 @@
-# AlgoSave: Discipline-as-a-Service on Algorand
+# DhanSathi — AI-Powered Financial Management on Algorand
 
-AlgoSave is a decentralized application (DApp) that transforms a simple savings goal tracker into a powerful commitment device. It provides "Discipline-as-a-Service" by using Algorand smart contracts to enforce savings rules, ensuring students can reach their financial goals without relying on willpower alone.
+DhanSathi is a personal finance management platform that combines AI-driven insights with on-chain savings discipline. Users connect their Algorand wallet, set savings goals that are enforced by a smart contract, track spending, and get personalised financial advice from a built-in AI advisor — all in one progressive web app.
 
-## 1. Problem Statement
+---
 
-For many students, saving money is a significant challenge. Traditional savings methods and apps often fail because they lack the structure and discipline required to reach a long-term goal. Key problems include:
+## Hackathon Requirements & How We Fulfil Them
 
-*   **Lack of Discipline:** It's easy to dip into savings for unplanned expenses, derailing progress. Digital savings are often just a number in a database, with no real barrier to withdrawal.
-*   **Trust Issues:** Centralized financial apps require users to trust the company with their funds and data. This trust can be misplaced, as terms can change and data can be misused.
-*   **Lack of Transparency:** With traditional apps, it's hard to verify how your funds are managed or if the savings "rules" can be changed without notice.
+| Requirement | Status | Details |
+|---|---|---|
+| All smart contracts deployed to Algorand Testnet | ✅ | `SavingsVault` contract — App ID `755771019` |
+| AlgoKit used as primary development framework | ✅ | AlgoKit workspace under `alogkit-contracts/`; built with `algokit project run build` |
+| App ID (Testnet) provided at submission | ✅ | `755771019` — see [Testnet explorer link](#app-id-testnet--testnet-explorer) |
+| Solution interacts with Algorand in a meaningful way | ✅ | Smart contract locks user funds, enforces goal deadlines, and releases them only when goals are met or the deadline passes — not just a payment layer |
 
-Existing solutions fail because they don't provide a strong enough commitment mechanism. AlgoSave addresses this by using a smart contract as a personal, immutable savings vault.
+---
 
-## 2. Solution Overview
+## Problem Statement
 
-AlgoSave combines a user-friendly web interface with the power of the Algorand blockchain to create a robust micro-savings platform. We call this **Discipline-as-a-Service**: your savings rules are enforced by code, not willpower.
+Millions of people, especially in emerging markets, struggle with savings discipline. Traditional banks provide no programmable enforcement, and DeFi tools are too complex. DhanSathi addresses this by:
 
-*   **Off-Chain (User Experience):** A Next.js frontend provides a clean, intuitive interface for creating goals, tracking progress, and interacting with the blockchain. Firebase is used to store non-critical metadata, like goal names and AI-generated tips.
-*   **On-Chain (Savings Logic):** The core of the application is a Beaker smart contract deployed on the Algorand Testnet. Each savings goal is a unique instance of this contract, acting as a personal, on-chain vault. This contract enforces the savings rules, such as locking funds until a goal is met or a deadline passes.
+- Locking savings in an Algorand smart contract so they cannot be withdrawn until a goal is met or a deadline passes.
+- Providing AI-generated financial advice tailored to the user's spending patterns.
+- Supporting multilingual access (Google Translate integration) to reach underserved communities.
 
-This hybrid model ensures a smooth user experience while guaranteeing the security, transparency, and discipline of a decentralized system. As an explicit design choice, **Algorand's smart contract enforces savings discipline without relying on trust.**
+---
 
-## 3. Live Demo Links
+## Live Demo
 
-*   **Hosted App URL:** `[YOUR_HOSTED_URL_HERE]`
-*   **LinkedIn Demo Video:** `[YOUR_PUBLIC_LINKEDIN_VIDEO_URL_HERE]`
+> **URL:** [https://final-pw-proto.vercel.app](https://final-pw-proto.vercel.app)  
+> *(Connect a Pera Wallet on Testnet to experience the full flow)*
 
-## 4. Algorand App Details
+---
 
-*   **Network:** Algorand Testnet
-*   **Sample App ID:** `[YOUR_DEPLOYED_APP_ID_HERE]`
-*   **Testnet Explorer Link:** `https://testnet.explorer.perawallet.app/applications/[YOUR_DEPLOYED_APP_ID_HERE]`
+## LinkedIn Demo Video
 
-## 5. Architecture Overview
+> **Video:** [Add your LinkedIn video URL here]
 
-The application is composed of several key components:
+---
 
-*   **Frontend (Next.js/React):** The user interface for creating and managing savings goals. It handles wallet connections (via Pera Wallet) and constructs transactions to be signed by the user. It reads on-chain state directly from the Algorand Testnet to display progress.
-*   **Smart Contract (Beaker/PyTEAL):** The on-chain `SavingsVault` contract that holds funds and enforces savings rules. It contains the core business logic for deposits and time-locked withdrawals.
-*   **Firebase/Firestore (Metadata):** Used as a lightweight backend to store off-chain goal metadata, such as the goal's name and its corresponding on-chain `appId`. It also caches deposit history for charting purposes.
-*   **Pera Wallet (@perawallet/connect):** The wallet used for account management and transaction signing. Users interact with the blockchain securely through their own Pera wallet.
-*   **Algorand SDK (algosdk-js):** The library used by the frontend to communicate with the Algorand Testnet, create transactions, and read the smart contract's state.
+## App ID (Testnet) & Testnet Explorer
 
-## 6. Tech Stack
+| Detail | Value |
+|---|---|
+| **App ID** | `755771019` |
+| **Network** | Algorand Testnet |
+| **Explorer** | [View on Pera Explorer](https://testnet.explorer.perawallet.app/application/755771019) |
 
-*   **Blockchain:** Algorand Testnet
-*   **Smart Contract Framework:** AlgoKit, Beaker (PyTEAL)
-*   **Frontend Framework:** Next.js, React
-*   **UI Components:** ShadCN UI, Tailwind CSS
-*   **Wallet Integration:** Pera Wallet
-*   **Database (Metadata):** Firebase Firestore
-*   **AI Integration:** Google Gemini (for AI Coach and Smart Savings features)
+---
 
-## 7. Setup & Installation
+## Architecture Overview
 
-Follow these steps to run the project locally.
+```
+┌─────────────────────────────────────────────────────────┐
+│                     User (Browser)                      │
+│              Next.js 15 Progressive Web App             │
+└────────────────────────┬────────────────────────────────┘
+                         │  algosdk + @algorandfoundation/algokit-utils
+          ┌──────────────┴───────────────┐
+          │                              │
+          ▼                              ▼
+ ┌─────────────────┐           ┌──────────────────┐
+ │  Algorand Node  │           │  Firebase / AI   │
+ │  (Testnet via   │           │  (Firestore for  │
+ │   AlgoNode)     │           │   user data +    │
+ │                 │           │   Genkit/Gemini  │
+ │  SavingsVault   │           │   AI advisor)    │
+ │  App ID:        │           └──────────────────┘
+ │  755771019      │
+ └─────────────────┘
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone [YOUR_GITHUB_REPO_URL]
-    cd [YOUR_REPO_NAME]
-    ```
+Smart Contract Interaction Flow
+────────────────────────────────
+1. User connects Pera Wallet (WalletContext)
+2. Frontend calls `create_goal(owner, target, deadline)` → deploys or calls contract
+3. User deposits ALGOs via grouped atomic transaction (app call + payment)
+4. Contract validates sender, deadline, and completion state; updates `total_saved`
+5. When goal is met OR deadline passes, user calls `withdraw()` → inner transaction
+   sends full balance back to owner
+```
 
-2.  **Install Python & AlgoKit Dependencies:**
-    This project's smart contract is managed with AlgoKit. Ensure you have AlgoKit and its prerequisites installed.
-    ```bash
-    # Install Python dependencies for the contract
-    pip install -r contracts/requirements.txt
-    ```
+---
 
-3.  **Build & Deploy the Smart Contract:**
-    Use AlgoKit to compile and deploy the `SavingsVault` contract to the Algorand Testnet.
-    ```bash
-    # This will compile the Python code into TEAL and generate an application spec
-    algokit build
+## Tech Stack
 
-    # Deploy to Testnet. This step requires a funded Testnet account configured with AlgoKit.
-    # The deployment script will output a new APP_ID.
-    algokit deploy
-    ```
-    After deployment, you **must** copy the compiled TEAL code from `contracts/build/approval.teal` and `contracts/build/clear.teal` and place them into the `APPROVAL_PROGRAM` and `CLEAR_PROGRAM` variables in `src/lib/blockchain.ts`.
+| Layer | Technology |
+|---|---|
+| Smart Contract Framework | **AlgoKit** (workspace + deploy) |
+| Smart Contract Language | **Algorand Python (algopy / puyapy)** for the AlgoKit contract; **PyTEAL + Beaker** for the legacy `contracts/app.py` |
+| Blockchain | Algorand Testnet |
+| Frontend | **Next.js 15** (App Router, TypeScript) |
+| Wallet | **Pera Wallet** via `@perawallet/connect` |
+| Blockchain SDK | `algosdk` 2.8, `@algorandfoundation/algokit-utils` |
+| AI / LLM | **Google Genkit + Gemini** (AI financial advisor) |
+| Database | **Firebase Firestore** (user goals, transactions, groups) |
+| Styling | Tailwind CSS, shadcn/ui, Radix UI |
+| Deployment | Vercel |
 
-4.  **Install Frontend Dependencies:**
-    ```bash
-    npm install
-    ```
+---
 
-5.  **Configure Environment Variables:**
-    Create a `.env` file in the root of the project and add your Firebase project configuration.
+## Installation & Setup
 
-6.  **Run the Development Server:**
-    ```bash
-    npm run dev
-    ```
-    Open [http://localhost:9002](http://localhost:9002) in your browser.
+### Prerequisites
 
-## 8. Usage Guide
+- Node.js 20+
+- Python 3.12+
+- [AlgoKit CLI](https://github.com/algorandfoundation/algokit-cli#install) (`algokit --version` ≥ 2.0.0)
+- [Poetry](https://python-poetry.org/docs/#installation) (`poetry -V` ≥ 1.2)
+- [Pera Wallet](https://perawallet.app/) browser extension or mobile app (set to **Testnet**)
 
-1.  **Connect Wallet:** Click "Connect Wallet" on the top right and connect your Pera Wallet (ensure it's set to Testnet). You'll need some Testnet ALGO, which you can get from the Algorand Testnet Dispenser.
-2.  **Create a Savings Vault:** Navigate to "Create New Goal". Give your goal a name (e.g., "Summer Trip"), a target amount, and a deadline. When you click "Create Goal", you are deploying a personal smart contract vault to the Algorand Testnet. You will need to approve this transaction in your Pera Wallet.
-3.  **Make a Deposit:** On the goal details page, click "Make a Deposit". Enter an amount and approve the transaction. This is a grouped transaction: one part calls the `deposit` method on your smart contract, and the other part is the actual ALGO payment. Both must succeed together.
-4.  **Track On-Chain Progress:** Your dashboard and goal details page will update automatically, reading data directly from your smart contract on the blockchain. You can see your on-chain balance, transaction history, and progress chart.
-5.  **Withdraw Your Savings:** A "Withdraw" button will appear only when your goal is completed or the deadline has passed. This rule is enforced by the smart contract. Clicking it will transfer the entire contract balance back to your wallet.
+### 1. Clone the Repository
 
-## 9. Known Limitations
+```bash
+git clone https://github.com/AadityaHande/FInal-PW-Proto.git
+cd FInal-PW-Proto
+```
 
-*   **Single User:** The contract is designed for a single owner. Each user manages their own set of goal contracts.
-*   **One Goal Per Contract:** Each goal deploys a new, separate smart contract to ensure funds are isolated and rules are specific to that goal.
-*   **Testnet Only:** The application is configured for the Algorand Testnet. Real funds should not be used.
+### 2. Install Frontend Dependencies
 
-## 10. Team Members & Roles
+```bash
+npm install
+```
 
-*   **[Your Name]** - Full-Stack & Smart Contract Developer
+### 3. Configure Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_ALGOD_SERVER=https://testnet-api.algonode.cloud
+NEXT_PUBLIC_ALGOD_PORT=443
+NEXT_PUBLIC_ALGOD_TOKEN=
+NEXT_PUBLIC_APP_ID=755771019
+
+# Firebase config
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+
+# Genkit / Gemini AI
+GOOGLE_GENAI_API_KEY=your_google_genai_key
+```
+
+### 4. Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:9002](http://localhost:9002) in your browser.
+
+### 5. (Optional) Build & Deploy the Smart Contract
+
+```bash
+cd alogkit-contracts/projects/alogkit-contracts
+poetry install
+algokit project run build
+algokit project deploy testnet
+```
+
+---
+
+## Usage Guide
+
+### Connect Wallet
+1. Open the app and click **Connect Wallet**.
+2. Select **Pera Wallet** and approve the connection (ensure Testnet is active).
+
+### Create a Savings Goal
+1. Navigate to **Goals → New Goal**.
+2. Enter a goal name, target amount (in ALGO), and deadline.
+3. Confirm the transaction in Pera Wallet — this calls `create_goal` on the smart contract.
+
+### Deposit
+1. Open an existing goal and click **Deposit**.
+2. Enter an amount and confirm the grouped atomic transaction (app call + payment).
+3. The contract validates all conditions and updates `total_saved` on-chain.
+
+### Withdraw
+1. Once the goal is complete or the deadline has passed, click **Withdraw**.
+2. The contract executes an inner transaction to return all funds to your wallet.
+
+### AI Advisor
+- Navigate to **Advisor** for personalised financial tips based on your spending patterns.
+
+### Analytics & Leaderboard
+- View spending breakdowns in **Analytics** and compare saving streaks in **Leaderboard**.
+
+---
+
+## Known Limitations
+
+- Wallet support is currently limited to **Pera Wallet** only (no WalletConnect v2 / other wallets).
+- The legacy `contracts/app.py` (PyTEAL + Beaker) is retained for reference; the production contract uses the AlgoKit workspace.
+- Firebase Firestore rules are in development mode — production deployment requires proper security rules.
+- The AI advisor requires a valid Google Genkit / Gemini API key; without it, the advisor tab will not function.
+- Only **ALGO** is supported as the savings asset; ASA (Algorand Standard Asset) goals are not yet implemented.
+- Mobile PWA install is supported on Android; iOS has limited PWA support.
+
+---
+
+## Team Members & Roles
+
+| Name | Role |
+|---|---|
+| Aaditya Hande | Full-Stack Development, Smart Contract, AlgoKit Integration |
+
+> *Add additional team members and their roles here.*
+
+---
+
+## Repository Structure
+
+```
+FInal-PW-Proto/
+├── alogkit-contracts/          # AlgoKit smart contract workspace
+│   └── projects/alogkit-contracts/
+│       └── smart_contracts/savings_vault/
+│           ├── contract.py     # ARC-4 SavingsVault (Algorand Python)
+│           └── deploy_config.py
+├── contracts/                  # Legacy PyTEAL + Beaker contract (reference)
+│   └── app.py
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   ├── components/             # React UI components
+│   ├── contexts/               # WalletContext (Pera Wallet integration)
+│   ├── hooks/                  # Custom React hooks
+│   ├── lib/                    # algosdk helpers, Firebase client
+│   └── ai/                     # Genkit AI flows
+├── public/                     # Static assets
+└── README.md
+```

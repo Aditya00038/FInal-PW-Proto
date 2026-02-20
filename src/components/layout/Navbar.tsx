@@ -37,8 +37,8 @@ import LanguageSelectorMobile from "./LanguageSelectorMobile";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/savings/new", label: "Savings", icon: PiggyBank },
-  { href: "/goals/new", label: "Smart Contract", icon: Target },
+  { href: "/savings/new", label: "Off-Chain", icon: PiggyBank },
+  { href: "/goals/new", label: "On-Chain", icon: Target },
   { href: "/groups", label: "Groups", icon: Users },
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },

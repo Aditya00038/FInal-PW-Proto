@@ -6,6 +6,11 @@ const withPWA = withPWAInit({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
+  fallbacks: {
+    document: '/offline',
+  },
+  cacheOnFrontEndNav: true,
+  reloadOnOnline: true,
 });
 
 const nextConfig: NextConfig = {

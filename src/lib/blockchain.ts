@@ -262,3 +262,83 @@ export async function getGoalOnChainState(appId: number): Promise<OnChainGoal> {
         throw new Error(`Could not fetch state for App ${appId}. It may not exist on TestNet.`);
     }
 }
+
+// ---------------------------------------------------------------------------
+// ARC-3 Compliant Achievement NFT Minting
+// ---------------------------------------------------------------------------
+// Creates a unique Algorand Standard Asset (ASA) with:
+//   - Total supply: 1  (non-fungible)
+//   - Decimals: 0
+//   - ARC-3 metadata embedded in the transaction note
+// The returned object contains the ASA ID and the creation transaction ID.
+
+export interface MintNFTResult {
+    asaId: number;
+    txId: string;
+}
+
+export async function mintAchievementNFT(
+    senderAddress: string,
+    goalInfo: {
+        goalName: string;
+        targetAmount: number; // microALGOs
+        totalSaved: number;   // microALGOs
+        appId: number;
+    },
+    signTransactions: (txns: Transaction[]) => Promise<Uint8Array[]>
+): Promise<MintNFTResult> {
+    const suggestedParams = await algodClient.getTransactionParams().do();
+
+    // ARC-3 metadata stored in the transaction note field as JSON
+    const arc3Metadata = {
+        standard: "arc3",
+        name: `DhanSathi Achievement: ${goalInfo.goalName}`,
+        description: `Goal "${goalInfo.goalName}" completed on DhanSathi AlgoSave`,
+        properties: {
+            goalName: goalInfo.goalName,
+            targetAmount: goalInfo.targetAmount,
+            totalSaved: goalInfo.totalSaved,
+            appId: goalInfo.appId,
+            completedAt: new Date().toISOString(),
+        },
+    };
+
+    const note = new TextEncoder().encode(JSON.stringify(arc3Metadata));
+
+    // Algorand ASA name limit: 32 bytes. Prefix "DSAchv-" = 7 bytes, leaving 25 bytes.
+    // Use substring(0, 8) which is at most 24 bytes even for 3-byte UTF-8 characters.
+    const namePart = goalInfo.goalName.replace(/\s+/g, "").substring(0, 8);
+    const assetName = `DSAchv-${namePart}`;
+    const unitName = "DSACHV";
+
+    // ARC-3 requires the asset URL to end with "#arc3" to signal that the
+    // asset follows the ARC-3 metadata standard.
+    // We embed the goal's AlgoExplorer link so verifiers can trace it back to
+    // the savings vault contract on Algorand Testnet.
+    const assetUrl = `https://testnet.explorer.perawallet.app/application/${goalInfo.appId}#arc3`;
+
+    const createAsaTxn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
+        from: senderAddress,
+        suggestedParams,
+        defaultFrozen: false,
+        unitName,
+        assetName,
+        total: 1,
+        decimals: 0,
+        manager: senderAddress,
+        reserve: senderAddress,
+        freeze: senderAddress,
+        clawback: senderAddress,
+        assetURL: assetUrl,
+        note,
+    });
+
+    const [signedTxn] = await signTransactions([createAsaTxn]);
+    const { txId } = await algodClient.sendRawTransaction(signedTxn).do();
+    const result = await algosdk.waitForConfirmation(algodClient, txId, 4);
+
+    const asaId: number = result["asset-index"];
+    if (!asaId) throw new Error("Could not get ASA ID from NFT creation transaction.");
+
+    return { asaId, txId };
+}

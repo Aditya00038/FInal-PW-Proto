@@ -12,8 +12,9 @@ import {
   Calendar, Target, PiggyBank, CheckCircle2, History,
   Bot, Milestone, Wallet as WalletIcon, TrendingUp, TrendingDown,
   ArrowUpRight, ArrowDownRight, Sparkles, Shield, Clock, AlertTriangle,
-  Banknote, Brain,
+  Banknote, Brain, Trophy, Star, Lock,
 } from "lucide-react";
+import { calculateNormalGoalAchievements, getTierBadgeStyle, type Achievement } from "@/lib/achievements";
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
@@ -58,6 +59,20 @@ export default function NormalGoalDetailsClient({ goal: initialGoal }: NormalGoa
   }, [goal.id]);
 
   const prediction = useMemo(() => getSavingsPrediction(goal), [goal]);
+
+  // Calculate achievements
+  const achievementProgress = useMemo(() => {
+    const deposits = goal.transactions.filter(t => t.type === "deposit");
+    return calculateNormalGoalAchievements({
+      currentBalance: goal.currentBalance,
+      targetAmount: goal.targetAmount,
+      deposits: deposits,
+      goalCompleted: goal.currentBalance >= goal.targetAmount,
+    });
+  }, [goal]);
+
+  const unlockedAchievements = achievementProgress.filter(a => a.unlocked);
+  const lockedAchievements = achievementProgress.filter(a => !a.unlocked);
   const aiAdvice = useMemo(() => getAIGoalAdvice(goal), [goal]);
 
   const progress = goal.targetAmount > 0
@@ -126,8 +141,8 @@ export default function NormalGoalDetailsClient({ goal: initialGoal }: NormalGoa
             <div>
               <div className="flex items-center gap-2">
                 <CardTitle className="font-headline text-3xl">{goal.name}</CardTitle>
-                <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700 border-blue-200">
-                  Flexible Goal
+                <Badge variant="outline" className="text-[10px] bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
+                  💰 Off-Chain (Flexible)
                 </Badge>
               </div>
               <CardDescription className="mt-2 flex items-center text-base">
@@ -496,6 +511,88 @@ export default function NormalGoalDetailsClient({ goal: initialGoal }: NormalGoa
                     .toLocaleString("en-IN")}
                 </span>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Achievement Badges */}
+          <Card className="border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Trophy className="mr-2 h-5 w-5 text-amber-500" /> Achievement Badges
+              </CardTitle>
+              <CardDescription>
+                {unlockedAchievements.length} of {achievementProgress.length} unlocked
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Unlocked Achievements */}
+              {unlockedAchievements.length > 0 && (
+                <div className="space-y-2">
+                  {unlockedAchievements.map((achievement) => {
+                    const tierStyle = getTierBadgeStyle(achievement.tier);
+                    return (
+                      <div
+                        key={achievement.id}
+                        className={cn(
+                          "flex items-center gap-3 p-2 rounded-lg border",
+                          tierStyle.bg,
+                          tierStyle.border
+                        )}
+                      >
+                        <div className={cn("text-xl", tierStyle.text)}>
+                          {achievement.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className={cn("font-medium text-sm", tierStyle.text)}>
+                              {achievement.name}
+                            </span>
+                            <Badge className={cn("text-[10px] px-1.5 py-0", tierStyle.badge)}>
+                              {achievement.tier}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {achievement.description}
+                          </p>
+                        </div>
+                        <Star className={cn("h-4 w-4 fill-current", tierStyle.text)} />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Locked Achievements (show next 2) */}
+              {lockedAchievements.length > 0 && (
+                <div className="space-y-2 pt-2 border-t border-dashed">
+                  <p className="text-xs text-muted-foreground font-medium">Next to unlock:</p>
+                  {lockedAchievements.slice(0, 2).map((achievement) => (
+                    <div
+                      key={achievement.id}
+                      className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 border border-dashed opacity-60"
+                    >
+                      <div className="text-xl grayscale">{achievement.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium text-sm text-muted-foreground">
+                          {achievement.name}
+                        </span>
+                        {achievement.hint && (
+                          <p className="text-xs text-muted-foreground/80">
+                            {achievement.hint}
+                          </p>
+                        )}
+                      </div>
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {unlockedAchievements.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  Make your first deposit to start unlocking achievements!
+                </p>
+              )}
             </CardContent>
           </Card>
 

@@ -35,8 +35,8 @@ export default function NormalGoalCard({ goal }: NormalGoalCardProps) {
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="font-headline text-xl">{goal.name}</CardTitle>
-            <Badge variant="outline" className="mt-1 text-[10px] bg-blue-50 text-blue-700 border-blue-200">
-              Flexible Goal
+            <Badge variant="outline" className="mt-1 text-[10px] bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
+              💰 Off-Chain (Flexible)
             </Badge>
           </div>
           <Badge

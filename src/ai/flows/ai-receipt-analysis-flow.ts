@@ -33,10 +33,10 @@ Suggest a micro-saving amount (0.5 to 2 ALGO) and give a short encouraging reaso
 Respond in JSON: {\"suggestedAmount\": 0.5, \"reason\": \"...\"}`;
 
   try {
-    const { text } = await ai.generate({
-      prompt,
-      media: input.imageDataUri ? [{ url: input.imageDataUri }] : undefined,
-    });
+    const parts = input.imageDataUri
+      ? [{ text: prompt }, { media: { url: input.imageDataUri } }]
+      : [{ text: prompt }];
+    const { text } = await ai.generate(parts);
     const parsed = JSON.parse(text || '{}');
     return {
       suggestedAmount: parsed.suggestedAmount || 0.5,

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Download, X } from "lucide-react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 
-const DISMISSED_KEY = "algosave_pwa_install_dismissed";
+const DISMISSED_KEY = "dhansathi_pwa_install_dismissed";
 
 export default function InstallPrompt() {
   const { isInstallable, install } = usePWAInstall();
@@ -36,8 +36,8 @@ export default function InstallPrompt() {
   if (!showBanner || !isInstallable) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 animate-in slide-in-from-bottom duration-500">
-      <div className="mx-auto max-w-lg p-4">
+    <div className="fixed bottom-0 left-0 right-0 z-50 animate-in slide-in-from-bottom duration-500 md:bottom-4 md:left-auto md:right-4 md:w-auto">
+      <div className="mx-auto max-w-lg p-4 md:p-0">
         <div className="flex items-center gap-4 rounded-xl border bg-card p-4 shadow-2xl">
           {/* Icon */}
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
@@ -59,9 +59,9 @@ export default function InstallPrompt() {
 
           {/* Text */}
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm">Install AlgoSave</p>
+            <p className="font-semibold text-sm">Install DhanSathi</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Install as an app for offline access and faster performance
+              Add to home screen for faster access & offline support
             </p>
           </div>
 

@@ -33,15 +33,15 @@ export default function GoalsList({ goals, normalGoals, isLoading, loadGoals }: 
           <Button asChild variant="default" size="sm">
             <Link href="/savings/new">
               <PiggyBank className="mr-1 md:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">New Goal</span>
-              <span className="sm:hidden">New</span>
+              <span className="hidden sm:inline">Off-Chain</span>
+              <span className="sm:hidden">Save</span>
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link href="/goals/new">
               <Shield className="mr-1 md:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Smart Contract</span>
-              <span className="sm:hidden">Contract</span>
+              <span className="hidden sm:inline">On-Chain</span>
+              <span className="sm:hidden">Lock</span>
             </Link>
           </Button>
         </div>
@@ -63,7 +63,7 @@ export default function GoalsList({ goals, normalGoals, isLoading, loadGoals }: 
             onClick={() => setActiveTab("savings")}
           >
             <PiggyBank className="mr-1 h-3.5 w-3.5" />
-            Savings ({normalGoals.length})
+            Off-Chain ({normalGoals.length})
           </Button>
           <Button
             variant={activeTab === "contract" ? "default" : "outline"}
@@ -71,7 +71,7 @@ export default function GoalsList({ goals, normalGoals, isLoading, loadGoals }: 
             onClick={() => setActiveTab("contract")}
           >
             <Shield className="mr-1 h-3.5 w-3.5" />
-            Smart Contract ({goals.length})
+            On-Chain ({goals.length})
           </Button>
         </div>
       )}
@@ -96,18 +96,18 @@ export default function GoalsList({ goals, normalGoals, isLoading, loadGoals }: 
         <div className="flex flex-col items-center justify-center py-16">
           <div className="mb-4 text-6xl">🏦</div>
           <h3 className="text-2xl font-semibold">No Goals Yet!</h3>
-          <p className="mt-2 text-muted-foreground text-center">
-            Ready to start saving? Create a savings goal or a blockchain-secured smart contract goal.
+          <p className="mt-2 text-muted-foreground text-center max-w-md">
+            Start your savings journey! Choose <strong>Off-Chain</strong> for flexible savings or <strong>On-Chain</strong> to lock funds on blockchain.
           </p>
           <div className="flex gap-3 mt-6">
             <Button asChild>
               <Link href="/savings/new">
-                <PiggyBank className="mr-2 h-4 w-4" /> Create Savings Goal
+                <PiggyBank className="mr-2 h-4 w-4" /> 💰 Off-Chain Goal
               </Link>
             </Button>
             <Button asChild variant="outline">
               <Link href="/goals/new">
-                <Shield className="mr-2 h-4 w-4" /> Smart Contract Goal
+                <Shield className="mr-2 h-4 w-4" /> 🔒 On-Chain Goal
               </Link>
             </Button>
           </div>
